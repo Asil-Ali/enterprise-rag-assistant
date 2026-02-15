@@ -1,4 +1,4 @@
-from langchain.document_loaders import PyPDFLoader, TextLoader
+from langchain_community.document_loaders import PyPDFLoader, TextLoader
 import tempfile
 
 def load_documents(files):
