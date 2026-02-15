@@ -41,9 +41,9 @@ if uploaded_files:
     )
 
     output_format = st.selectbox(
-        "Output format",
-        ["Readable", "JSON"]
-    )
+    "Output format",
+    ["Readable", "JSON", "Portfolio"]
+)
 
     if question:
         with st.spinner("Generating answer..."):
