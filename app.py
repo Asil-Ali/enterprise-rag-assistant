@@ -3,57 +3,127 @@ from agents.router_agent import route_question
 from rag.loader import load_documents
 from rag.vectorstore import build_vectorstore
 
-st.set_page_config(page_title="Enterprise AI Assistant", layout="wide")
+# إعدادات الصفحة
+st.set_page_config(
+    page_title="Enterprise AI Assistant",
+    layout="wide"
+)
 
+# العنوان والانطباع الأول
 st.title("🏢 Enterprise AI Assistant")
+st.caption(
+    "An enterprise-ready AI assistant for intelligent document understanding, retrieval, and decision support."
+)
+
+st.divider()
 
 # رفع الملفات
 uploaded_files = st.file_uploader(
-    "Upload company documents",
+    "📂 Upload company documents (PDF, TXT, etc.)",
     accept_multiple_files=True
 )
 
 if uploaded_files:
-    # حفظ الـ vectordb في الجلسة عشان ما يعيد المعالجة كل شوية
-    if 'vectordb' not in st.session_state:
-        with st.spinner("Processing documents..."):
+    # معالجة الملفات مرة واحدة فقط
+    if "vectordb" not in st.session_state:
+        with st.spinner("Processing and indexing documents..."):
             docs = load_documents(uploaded_files)
             st.session_state.vectordb = build_vectorstore(docs)
-            st.success("✅ Documents processed and indexed")
+        st.success("✅ Documents processed and indexed successfully")
+
+    st.divider()
 
     # إدخال السؤال
-    question = st.text_input("💬 Ask a question about your documents")
-    output_format = st.selectbox("Output format", ["Readable", "JSON"])
+    st.subheader("💬 Ask a question about your documents")
+    question = st.text_input(
+        "Type your question here",
+        placeholder="Example: Summarize the key requirements in the document"
+    )
+
+    output_format = st.selectbox(
+        "Output format",
+        ["Readable", "JSON"]
+    )
 
     if question:
         with st.spinner("Generating answer..."):
-            response = route_question(question, st.session_state.vectordb, output_format)
+            response = route_question(
+                question,
+                st.session_state.vectordb,
+                output_format
+            )
 
+        st.divider()
+
+        # عرض JSON
         if output_format == "JSON":
-            st.subheader("📊 Structured JSON Output")
+            st.subheader("📊 Structured Output")
             st.json(response)
-        else:
-            # عرض الإجابة داخل التصميم الجميل (الـ Card)
-            st.subheader("🤖 إجابة المساعد الذكي")
-            
-            # هنا نستخدم ['answer'] بأمان لأننا وحدناها في الـ Agent
-            ans = response.get('answer', 'No answer found.')
-            
-            st.markdown(f"""
-            <div style="background-color: #f0f2f6; padding: 20px; border-radius: 10px; border-left: 5px solid #007bff; color: #1a1a1a;">
-                {ans}
-            </div>
-            """, unsafe_allow_html=True)
 
-            # المصادر والتحقق
-            with st.expander("📌 المصادر المعتمدة وتفاصيل الموثوقية"):
-                st.write(f"**نسبة الثقة:** {response.get('confidence', 0)*100:.0f}%")
-                st.info(response.get("source_documents", "لا توجد مصادر محددة."))
+        # عرض بشري احترافي
+        else:
+            st.subheader("🤖 Assistant Answer")
+
+            answer_text = response.get("answer", "No answer generated.")
+
+            # كارد الإجابة
+            st.markdown(
+                f"""
+                <div style="
+                    background-color: #f4f6f8;
+                    padding: 24px;
+                    border-radius: 12px;
+                    border-left: 6px solid #2c7be5;
+                    color: #1a1a1a;
+                    font-size: 16px;
+                    line-height: 1.6;
+                ">
+                    {answer_text}
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            st.divider()
+
+            # المصادر والثقة
+            with st.expander("📌 Sources and reliability details"):
+                confidence = response.get("confidence", 0)
+                st.write(f"**Confidence level:** {confidence * 100:.0f}%")
+                st.info(
+                    response.get(
+                        "source_documents",
+                        "No source documents available."
+                    )
+                )
+
+            # نص منسق للتحميل
+            downloadable_text = f"""
+Enterprise AI Assistant Report
+
+Question:
+{question}
+
+----------------------------------------
+
+Answer:
+{answer_text}
+
+----------------------------------------
+
+Confidence Level:
+{confidence * 100:.0f}%
+"""
 
             # زر التحميل
             st.download_button(
-                label="📄 تحميل الإجابة (TXT)",
-                data=ans,
-                file_name="ai_answer.txt",
+                label="📄 Download answer as text file",
+                data=downloadable_text,
+                file_name="enterprise_ai_answer.txt",
                 mime="text/plain"
             )
+
+else:
+    st.info(
+        "⬆️ Upload documents to start using the Enterprise AI Assistant."
+    )
