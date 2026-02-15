@@ -22,9 +22,11 @@ Question:
 
 Return a structured and clear answer.
 """
+    answer_obj = llm(prompt)
 
-    answer = llm.invoke(prompt)
+    if hasattr(answer_obj, "content"):
+        answer_text = answer_obj.content
+    else:
+        answer_text = answer_obj
 
-    
-
-    return {"answer": answer, "context_used": context}
+    return {"answer": answer_text, "context_used": context}
