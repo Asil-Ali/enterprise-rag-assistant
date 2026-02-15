@@ -23,16 +23,16 @@ Question:
 Return a structured and clear answer.
 """
 
-    # استدعاء LLM مباشرة
+    # استدعاء LLM
     answer_obj = llm(prompt)
 
-    # التعامل مع جميع أنواع الإرجاع الممكنة
+    # تحويل أي كائن BaseModel أو AIMessage إلى string
     try:
         # إذا كان كائن pydantic / AIMessage
         answer_text = answer_obj.content
     except AttributeError:
         try:
-            # إذا كان dict (BaseModel يقدّم dict)
+            # إذا كان dict (BaseModel قد يرجع dict)
             answer_text = answer_obj.get("content", str(answer_obj))
         except Exception:
             # fallback لأي نوع آخر
