@@ -23,6 +23,8 @@ Question:
 Return a structured and clear answer.
 """
 
-    answer = llm.invoke(prompt).content
+    answer = llm.invoke(prompt)
+
+    
 
     return {"answer": answer, "context_used": context}
