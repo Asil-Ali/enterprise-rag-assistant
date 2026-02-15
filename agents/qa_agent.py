@@ -1,5 +1,6 @@
 from langchain_openai import ChatOpenAI
 from rag.retriever import retrieve_context
+from langchain_core.messages import HumanMessage # إضافة مستحبة للتعامل السليم مع LangChain
 import os
 
 def answer_with_rag(question, vectordb):
@@ -23,19 +24,14 @@ Question:
 Return a structured and clear answer.
 """
 
-    # استدعاء LLM
-    answer_obj = llm(prompt)
+    # --- التعديل هنا ---
+    # استخدم .invoke() بدلاً من الاستدعاء المباشر
+    answer_obj = llm.invoke(prompt) 
 
-    # تحويل أي كائن BaseModel أو AIMessage إلى string
+    # بما أن answer_obj الآن هو AIMessage، الوصول لمحتواه يكون بـ .content
     try:
-        # إذا كان كائن pydantic / AIMessage
         answer_text = answer_obj.content
     except AttributeError:
-        try:
-            # إذا كان dict (BaseModel قد يرجع dict)
-            answer_text = answer_obj.get("content", str(answer_obj))
-        except Exception:
-            # fallback لأي نوع آخر
-            answer_text = str(answer_obj)
+        answer_text = str(answer_obj)
 
     return {"answer": answer_text, "context_used": context}
