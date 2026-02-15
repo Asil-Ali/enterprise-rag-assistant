@@ -3,6 +3,7 @@ from agents.router_agent import route_question
 from rag.loader import load_documents
 from rag.vectorstore import build_vectorstore
 from fpdf import FPDF  # لإنشاء PDF يدعم Unicode
+from utils.pdf_utils import build_pdf
 
 # إعدادات الصفحة
 st.set_page_config(
