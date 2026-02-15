@@ -1,5 +1,4 @@
 def format_output(result, output_format):
-    # استخراج البيانات الأساسية لضمان عدم حدوث خطأ
     answer = result.get("answer", "No answer found.")
     context = result.get("context_used", "")
     verified = result.get("verified", False)
@@ -17,8 +16,16 @@ def format_output(result, output_format):
                 }
             }
         }
-    
-    # تنسيق موحد للـ Readable
+
+    if output_format == "Portfolio":
+        return {
+            "answer": answer,
+            "confidence": f"{confidence * 100:.0f}%",
+            "verified": "Verified" if verified else "Not verified",
+            "preview_sources": context.split("\n")[:3] if isinstance(context, str) else []
+        }
+
+    # Readable (افتراضي)
     return {
         "answer": answer,
         "source_documents": context,
