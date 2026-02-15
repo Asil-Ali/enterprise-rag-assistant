@@ -22,11 +22,20 @@ Question:
 
 Return a structured and clear answer.
 """
+
+    # استدعاء LLM مباشرة
     answer_obj = llm(prompt)
 
-    if hasattr(answer_obj, "content"):
+    # التعامل مع جميع أنواع الإرجاع الممكنة
+    try:
+        # إذا كان كائن pydantic / AIMessage
         answer_text = answer_obj.content
-    else:
-        answer_text = answer_obj
+    except AttributeError:
+        try:
+            # إذا كان dict (BaseModel يقدّم dict)
+            answer_text = answer_obj.get("content", str(answer_obj))
+        except Exception:
+            # fallback لأي نوع آخر
+            answer_text = str(answer_obj)
 
     return {"answer": answer_text, "context_used": context}
