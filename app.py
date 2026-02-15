@@ -2,6 +2,7 @@ import streamlit as st
 from agents.router_agent import route_question
 from rag.loader import load_documents
 from rag.vectorstore import build_vectorstore
+from fpdf import FPDF  # لإنشاء PDF يدعم Unicode
 
 # إعدادات الصفحة
 st.set_page_config(
@@ -9,12 +10,10 @@ st.set_page_config(
     layout="wide"
 )
 
-# العنوان والانطباع الأول
 st.title("🏢 Enterprise AI Assistant")
 st.caption(
     "An enterprise-ready AI assistant for intelligent document understanding, retrieval, and decision support."
 )
-
 st.divider()
 
 # رفع الملفات
@@ -24,7 +23,6 @@ uploaded_files = st.file_uploader(
 )
 
 if uploaded_files:
-    # معالجة الملفات مرة واحدة فقط
     if "vectordb" not in st.session_state:
         with st.spinner("Processing and indexing documents..."):
             docs = load_documents(uploaded_files)
@@ -33,7 +31,6 @@ if uploaded_files:
 
     st.divider()
 
-    # إدخال السؤال
     st.subheader("💬 Ask a question about your documents")
     question = st.text_input(
         "Type your question here",
@@ -41,9 +38,9 @@ if uploaded_files:
     )
 
     output_format = st.selectbox(
-    "Output format",
-    ["Readable", "JSON", "Portfolio"]
-)
+        "Output format",
+        ["Readable", "JSON", "Portfolio"]
+    )
 
     if question:
         with st.spinner("Generating answer..."):
@@ -60,13 +57,13 @@ if uploaded_files:
             st.subheader("📊 Structured Output")
             st.json(response)
 
-        # عرض بشري احترافي
+        # عرض بشري احترافي أو Portfolio
         else:
             st.subheader("🤖 Assistant Answer")
-
             answer_text = response.get("answer", "No answer generated.")
+            confidence = float(response.get("confidence") or 0)
 
-            # كارد الإجابة
+            # كارد للإجابة
             st.markdown(
                 f"""
                 <div style="
@@ -86,16 +83,10 @@ if uploaded_files:
 
             st.divider()
 
-            # المصادر والثقة
+            # Expander للمصادر والثقة
             with st.expander("📌 Sources and reliability details"):
-                confidence = response.get("confidence", 0)
                 st.write(f"**Confidence level:** {confidence * 100:.0f}%")
-                st.info(
-                    response.get(
-                        "source_documents",
-                        "No source documents available."
-                    )
-                )
+                st.info(response.get("source_documents", "No source documents available."))
 
             # نص منسق للتحميل
             downloadable_text = f"""
@@ -115,15 +106,29 @@ Confidence Level:
 {confidence * 100:.0f}%
 """
 
-            # زر التحميل
+            # زر تحميل TXT
             st.download_button(
-                label="📄 Download answer as text file",
+                label="📄 Download as TXT",
                 data=downloadable_text,
                 file_name="enterprise_ai_answer.txt",
                 mime="text/plain"
             )
 
+            # زر تحميل PDF
+            pdf = FPDF()
+            pdf.add_page()
+            pdf.add_font("DejaVu", "", "DejaVuSansCondensed.ttf", uni=True)
+            pdf.set_font("DejaVu", "", 14)
+            pdf.multi_cell(0, 8, downloadable_text)
+            pdf_output = "enterprise_ai_answer.pdf"
+            pdf.output(pdf_output)
+            with open(pdf_output, "rb") as f:
+                st.download_button(
+                    label="📄 Download as PDF",
+                    data=f,
+                    file_name="enterprise_ai_answer.pdf",
+                    mime="application/pdf"
+                )
+
 else:
-    st.info(
-        "⬆️ Upload documents to start using the Enterprise AI Assistant."
-    )
+    st.info("⬆️ Upload documents to start using the Enterprise AI Assistant.")
