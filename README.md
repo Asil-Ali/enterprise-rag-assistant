@@ -27,7 +27,7 @@ Experience the AI Assistant directly in your browser:
 ## 📂 Source Code
 
 View and clone the full project:  
-[GitHub Repository – Enterprise AI Assistant]([https://github.com/username/enterprise-ai-assistant](https://github.com/Asil-Ali/enterprise-rag-assistant)
+[GitHub Repository – Enterprise AI Assistant]([https://github.com/username/enterprise-ai-assistant]https://github.com/Asil-Ali/enterprise-rag-assistant)
 
 ---
 
