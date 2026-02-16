@@ -2,10 +2,8 @@ import streamlit as st
 from agents.router_agent import route_question
 from rag.loader import load_documents
 from rag.vectorstore import build_vectorstore
-from fpdf import FPDF  # لإنشاء PDF يدعم Unicode
 from utils.pdf_utils import build_pdf
 
-# إعدادات الصفحة
 st.set_page_config(
     page_title="Enterprise AI Assistant",
     layout="wide"
@@ -17,7 +15,6 @@ st.caption(
 )
 st.divider()
 
-# رفع الملفات
 uploaded_files = st.file_uploader(
     "📂 Upload company documents (PDF, TXT, etc.)",
     accept_multiple_files=True
@@ -53,24 +50,20 @@ if uploaded_files:
 
         st.divider()
 
-        # عرض JSON
         if output_format == "JSON":
             st.subheader("📊 Structured Output")
             st.json(response)
 
-        # عرض بشري احترافي أو Portfolio
         else:
             st.subheader("🤖 Assistant Answer")
-            answer_text = response.get("answer", "No answer generated.")
-            # معالجة الثقة حسب نوع الإخراج
-if output_format == "Portfolio":
-    confidence_text = response.get("confidence", "0%")
-    confidence_value = None
-else:
-    confidence_value = float(response.get("confidence", 0))
-    confidence_text = f"{confidence_value * 100:.0f}%"
 
-            # كارد للإجابة
+            answer_text = response.get("answer", "No answer generated.")
+
+            if output_format == "Portfolio":
+                confidence = response.get("confidence", "0%")
+            else:
+                confidence = float(response.get("confidence", 0))
+
             st.markdown(
                 f"""
                 <div style="
@@ -90,12 +83,10 @@ else:
 
             st.divider()
 
-            # Expander للمصادر والثقة
             with st.expander("📌 Sources and reliability details"):
-                st.write(f"**Confidence level:** {confidence_text}")
+                st.write(f"**Confidence level:** {confidence}")
                 st.info(response.get("source_documents", "No source documents available."))
 
-            # نص منسق للتحميل
             downloadable_text = f"""
 Enterprise AI Assistant Report
 
@@ -110,10 +101,9 @@ Answer:
 ----------------------------------------
 
 Confidence Level:
-{confidence_text}
+{confidence}
 """
 
-            # زر تحميل TXT
             st.download_button(
                 label="📄 Download as TXT",
                 data=downloadable_text,
@@ -121,15 +111,11 @@ Confidence Level:
                 mime="text/plain"
             )
 
-            # زر تحميل PDF
-            pdf = FPDF()
-            pdf.add_page()
-            pdf.add_font("DejaVu", "", "DejaVuSansCondensed.ttf", uni=True)
-            pdf.set_font("DejaVu", "", 14)
-            pdf.multi_cell(0, 8, downloadable_text)
-            pdf_output = "enterprise_ai_answer.pdf"
-            pdf.output(pdf_output)
-            with open(pdf_output, "rb") as f:
+            pdf = build_pdf(answer_text, question, confidence)
+            pdf_path = "enterprise_ai_answer.pdf"
+            pdf.output(pdf_path)
+
+            with open(pdf_path, "rb") as f:
                 st.download_button(
                     label="📄 Download as PDF",
                     data=f,
