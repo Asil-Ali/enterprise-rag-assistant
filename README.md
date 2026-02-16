@@ -39,3 +39,17 @@ View and clone the full project:
 https://github.com/Asil-Ali/enterprise-rag-assistant.git
 
     cd enterprise-ai-assistant
+
+---
+
+##Install dependencies:
+
+
+pip install -r requirements.txt
+
+---
+
+##💻 Run Locally (Optional)
+
+streamlit run app.py
+    
