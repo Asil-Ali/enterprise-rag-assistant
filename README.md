@@ -42,14 +42,14 @@ https://github.com/Asil-Ali/enterprise-rag-assistant.git
 
 ---
 
-##Install dependencies:
+## Install dependencies:
 
 
 pip install -r requirements.txt
 
 ---
 
-##💻 Run Locally (Optional)
+## 💻 Run Locally (Optional)
 
 streamlit run app.py
     
