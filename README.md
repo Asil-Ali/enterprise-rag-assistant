@@ -20,7 +20,7 @@
 ## 🖥 Live Demo
 
 Experience the AI Assistant directly in your browser:  
-[Click here to explore the Enterprise AI Assistant](https://share.streamlit.io/username/enterprise-ai/main/app.py)
+[Click here to explore the Enterprise AI Assistant](https://enterprise-rag-assistant-h3bcvultgdjaekcsii8arq.streamlit.app/)
 
 ---
 
