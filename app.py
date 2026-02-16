@@ -62,7 +62,13 @@ if uploaded_files:
         else:
             st.subheader("🤖 Assistant Answer")
             answer_text = response.get("answer", "No answer generated.")
-            confidence = float(response.get("confidence") or 0)
+            # معالجة الثقة حسب نوع الإخراج
+if output_format == "Portfolio":
+    confidence_text = response.get("confidence", "0%")
+    confidence_value = None
+else:
+    confidence_value = float(response.get("confidence", 0))
+    confidence_text = f"{confidence_value * 100:.0f}%"
 
             # كارد للإجابة
             st.markdown(
@@ -86,7 +92,7 @@ if uploaded_files:
 
             # Expander للمصادر والثقة
             with st.expander("📌 Sources and reliability details"):
-                st.write(f"**Confidence level:** {confidence * 100:.0f}%")
+                st.write(f"**Confidence level:** {confidence_text}")
                 st.info(response.get("source_documents", "No source documents available."))
 
             # نص منسق للتحميل
@@ -104,7 +110,7 @@ Answer:
 ----------------------------------------
 
 Confidence Level:
-{confidence * 100:.0f}%
+{confidence_text}
 """
 
             # زر تحميل TXT
