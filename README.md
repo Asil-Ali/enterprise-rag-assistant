@@ -52,4 +52,16 @@ pip install -r requirements.txt
 ## 💻 Run Locally (Optional)
 
 streamlit run app.py
+
+
+## 📸 Screenshots
+
+### Document Upload
+![Document Upload](upload_docs.png)
+
+### Answer Output
+![Answer Output](answer_output.png)
+
+### PDF Export
+![PDF Export](pdf_download.png)
     
