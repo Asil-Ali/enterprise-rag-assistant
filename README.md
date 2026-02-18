@@ -57,11 +57,24 @@ streamlit run app.py
 ## 📸 Screenshots
 
 ### Document Upload
-![Document Upload](upload_docs.png)
+![Document Upload](upload_page.jpg)
 
 ### Answer Output
-![Answer Output](answer_output.png)
+![Answer Output](answer_output1.jpg)
+
+### Answer Output
+![Answer Output](answer_output2.jpg)
 
 ### PDF Export
-![PDF Export](pdf_download.png)
+![PDF Export](pdf_download.jpg)
+
+### PDF Export
+![PDF Export](pdf_download_output.jpg)
+
+### TXT Export
+![TXT Export](txt_download.jpg)
+
+### Sources Details Export
+![Sources Details](sources_details.jpg)
+
     
