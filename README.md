@@ -53,6 +53,23 @@ pip install -r requirements.txt
 
 streamlit run app.py
 
+## 🔑 Keywords / Tags
+
+AI assistant, RAG, LangChain, document analysis, multilingual AI, PDF generation, Streamlit app, vector search, enterprise AI, prompt engineering
+
+---
+
+## 📌 How to Use
+
+1. Upload your company documents (PDF, TXT, etc.).
+2. Type a question about your documents.
+3. Select an output format:
+   - **Readable** for human-friendly answers
+   - **JSON** for structured output
+   - **Portfolio** for professional presentation
+4. View the generated answer along with the confidence score.
+5. Download the results as **TXT** or **PDF**.
+
 
 ## 📸 Screenshots
 
